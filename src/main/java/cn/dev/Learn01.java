@@ -15,7 +15,7 @@ public class Learn01 {
         JavaSparkContext sc = new JavaSparkContext(conf);
 
         // Get SpatialRDD
-        String pointRDDInputLocation = Learn01.class.getResource("checkin.csv").toString();
+        String pointRDDInputLocation = Learn01.class.getResource("/checkin.csv").toString();
         Integer pointRDDOffset = 0; // 地理位置(经纬度)从第0列开始
         FileDataSplitter pointRDDSplitter = FileDataSplitter.CSV;
         Boolean carryOtherAttributes = true; // 第二列的属性(酒店名)
@@ -26,5 +26,6 @@ public class Learn01 {
         String targetCrsCode = "epsg:3857";
         rdd.CRSTransform(sourceCrsCode, targetCrsCode);
 
+        sc.stop();
     }
 }

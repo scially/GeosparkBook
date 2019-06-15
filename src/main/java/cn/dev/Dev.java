@@ -1,6 +1,5 @@
 package cn.dev;
 
-
 import com.vividsolutions.jts.geom.Geometry;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -20,24 +19,24 @@ import scala.Tuple2;
 
 import java.util.*;
 
-public class Learn08 {
+public class Dev {
     public static void main(String[] args) throws Exception {
         SparkSession spark = SparkSession.builder().
-                config("spark.serializer","org.apache.spark.serializer.KryoSerializer").
+                config("spark.serializer", "org.apache.spark.serializer.KryoSerializer").
                 config("spark.kryo.registrator", "org.datasyslab.geospark.serde.GeoSparkKryoRegistrator").
-                config("spark.kryoserializer.buffer.max","1g").
-                config("geospark.global.index","true").
-                config("geospark.join.gridtype","quadtree").
-                master("local[*]").appName("Learn08").getOrCreate();
+                config("spark.kryoserializer.buffer.max", "1g").
+                config("geospark.global.index", "true").
+                config("geospark.join.gridtype", "quadtree").
+                master("local[*]").appName("Dev").getOrCreate();
 
         GeoSparkSQLRegistrator.registerAll(spark);
         GeoSparkVizRegistrator.registerAll(spark);
 
         String url = "jdbc:postgresql://192.168.10.174:5432/geospark";
         Properties connectionProperties = new Properties();
-        connectionProperties.put("user","postgres");
-        connectionProperties.put("password","root");
-        connectionProperties.put("driver","org.postgresql.Driver");
+        connectionProperties.put("user", "postgres");
+        connectionProperties.put("password", "root");
+        connectionProperties.put("driver", "org.postgresql.Driver");
 
         String table = "fwm_2018_500_gz";
         Dataset<Row> df = spark.read().jdbc(url, table, connectionProperties);
@@ -66,20 +65,20 @@ public class Learn08 {
         JavaPairRDD<Geometry, HashSet<Geometry>> intersectRDD = JoinQuery.SpatialJoinQuery(fwmRDD, gridRDD, true, true);
         JavaPairRDD<Long, Double> r = intersectRDD.mapToPair(new PairFunction<Tuple2<Geometry, HashSet<Geometry>>, Long, Double>() {
             @Override
-            public Tuple2<Long, Double> call(Tuple2<Geometry, HashSet<Geometry>> pair)  {
-                    Geometry geo1 = pair._1;
-                    Double sumArea = 0.0d;
-                    for(Geometry geo : pair._2){
-                        if(geo1.intersects(geo))
-                            sumArea += geo.intersection(geo1).getArea();
-                    }
-                    return new Tuple2<>(Long.parseLong(geo1.getUserData().toString()), sumArea);
+            public Tuple2<Long, Double> call(Tuple2<Geometry, HashSet<Geometry>> pair) {
+                Geometry geo1 = pair._1;
+                Double sumArea = 0.0d;
+                for (Geometry geo : pair._2) {
+                    if (geo1.intersects(geo))
+                        sumArea += geo.intersection(geo1).getArea();
+                }
+                return new Tuple2<>(Long.parseLong(geo1.getUserData().toString()), sumArea);
             }
         });
         r = r.sortByKey();
         JavaRDD<String> csvRDD = r.map(new Function<Tuple2<Long, Double>, String>() {
             @Override
-            public String call(Tuple2<Long, Double> v1)  {
+            public String call(Tuple2<Long, Double> v1) {
                 return v1._1().toString() + "," + v1._2().toString();
             }
         });

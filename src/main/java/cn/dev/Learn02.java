@@ -5,6 +5,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.datasyslab.geospark.enums.IndexType;
 import org.datasyslab.geospark.formatMapper.shapefileParser.ShapefileReader;
 import org.datasyslab.geospark.spatialOperator.RangeQuery;
 import org.datasyslab.geospark.spatialRDD.SpatialRDD;
@@ -25,7 +26,8 @@ public class Learn02 extends Object{
         // Envelop
         Envelope rangeQueryWindow = new Envelope(-123.1, -123.2, 49.2, 49.3);
         boolean considerBoundaryIntersection = false;// Only return gemeotries fully covered by the window
-        boolean usingIndex = false;
+        boolean usingIndex = true;
+        rdd.buildIndex(IndexType.QUADTREE, false);
         JavaRDD<Geometry> queryResult = RangeQuery.SpatialRangeQuery(rdd, rangeQueryWindow, considerBoundaryIntersection, usingIndex);
         System.out.println(String.format("查询结果总数为: %d",queryResult.count()));
 

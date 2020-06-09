@@ -23,8 +23,12 @@ public class Learn01 {
 
         // 坐标系转换
         String sourceCrsCode = "epsg:4326";
-        String targetCrsCode = "epsg:3857";
+        String targetCrsCode = "epsg:4457";
         rdd.CRSTransform(sourceCrsCode, targetCrsCode);
 
+        // 遍历输出
+        rdd.rawSpatialRDD.foreach(point -> {
+            System.out.println(point.toString());
+        });
     }
 }

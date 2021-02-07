@@ -6,7 +6,7 @@
 # Log file
 *.log
 *.impl
-
+*.iml
 # Package Files #
 *.jar
 *.war

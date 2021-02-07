@@ -14,7 +14,7 @@ class Chapter01 {
         conf.set("spark.kryo.registrator", "org.apache.sedona.core.serde.SedonaKryoRegistrator");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        String pointRDDInputLocation = Chapter01.class.getResource("checkin.csv").toString();
+        String pointRDDInputLocation = Chapter01.class.getResource("/checkin.csv").toString();
         Integer pointRDDOffset = 0; // 地理位置(经纬度)从第0列开始
         FileDataSplitter pointRDDSplitter = FileDataSplitter.CSV;
         Boolean carryOtherAttributes = true; // 第二列的属性(酒店名)

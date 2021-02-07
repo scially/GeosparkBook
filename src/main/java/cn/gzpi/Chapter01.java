@@ -24,8 +24,6 @@ class Chapter01 {
         System.out.println(rdd.approximateTotalCount);
 
         rdd.CRSTransform("epsg:4326", "epsg:4547", true);
-        rdd.rawSpatialRDD.foreach((p)->{
-            System.out.println(p);
-        });
+        rdd.rawSpatialRDD.foreach((p)-> System.out.println(p));
     }
 }
